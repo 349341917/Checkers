@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import java.util.Objects;
 
 /**  Board GUI for implementation with various games
  *   Author: Kirill Levin, Troy Vasiga, Chris Ingram
@@ -232,6 +233,12 @@ public class Board extends JPanel
     this.putPeg( theColour, 0, col );
   }
   
+  public void putPeg(Color theColour, int row, int col)
+  {
+    this.grid[col][row] = theColour;
+    this.repaint();
+  }
+  
   /** Remove a peg from the gameboard.
    */
   public void removePeg(int row, int col)
@@ -334,4 +341,68 @@ public class Board extends JPanel
   {
     return this.grid[0].length;
   }
+  
+  public Color getColor(Coordinate c1) {
+	  
+	  return this.grid[c1.getCol()][c1.getRow()];
+	  
+  }
+  
+  public boolean isFree(Coordinate c1) {
+	  
+	  return Objects.isNull(this.grid[c1.getCol()][c1.getRow()]);
+	  
+  }
+  
+  public boolean isLegalMove(Coordinate start, Coordinate dest, boolean p1) {
+		
+	  	if (this.isFree(dest)) {
+	  		
+	  		if (p1) {
+	  			if (dest.getRow() <= start.getRow()) return false;
+	  			else if (dest.getCol() < start.getCol()-2 || dest.getCol() > start.getCol() + 2) return false;
+	  			else if (dest.getCol() == start.getCol()) return false;
+	  			else if (Math.abs(dest.getCol()-start.getCol()) != Math.abs(dest.getRow() - start.getRow())) return false;
+	  			else if (Math.abs(dest.getCol()-start.getCol()) == 2) {
+	  				//int row = (dest.getRow()+start.getRow())/2;
+	  				//int col = (dest.getCol()+start.getCol())/2;
+	  				Coordinate m1 = new Coordinate((dest.getRow()+start.getRow())/2, (dest.getCol()+start.getCol())/2);
+	  				if (this.getColor(m1) == Color.BLUE) return true;
+	  				else return false;
+	  			}
+	  			else return true;
+	  		}
+	  		else {
+	  			if (dest.getRow() >= start.getRow()) return false;
+	  			else if (dest.getCol() < start.getCol()-2 || dest.getCol() > start.getCol() + 2) return false;
+	  			else if (dest.getCol() == start.getCol()) return false;
+	  			else if (Math.abs(dest.getCol()-start.getCol()) != Math.abs(dest.getRow() - start.getRow())) return false;
+	  			else if (Math.abs(dest.getCol()-start.getCol()) == 2) {
+	  				//int row = (dest.getRow()+start.getRow())/2;
+	  				//int col = (dest.getCol()+start.getCol())/2;
+	  				Coordinate m1 = new Coordinate((dest.getRow()+start.getRow())/2, (dest.getCol()+start.getCol())/2);
+	  				if (this.getColor(m1) == Color.RED) return true;
+	  				else return false;
+	  			}
+	  			else return true;
+	  		}
+	  		
+	  	}
+	  	else return false;
+		
+	}
+  
+  public boolean isOwn(Coordinate c1, boolean p1) {
+	  
+	  if (p1) {
+		  if (this.getColor(c1) == Color.RED) return true;
+		  else return false;
+	  }
+	  else {
+		  if (this.getColor(c1) == Color.BLUE) return true;
+		  else return false;
+	  }
+	  
+  }
+  
 }
